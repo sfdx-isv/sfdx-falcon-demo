@@ -1,0 +1,6 @@
+<aura:event type="APPLICATION" description="EvtAccountCreated">
+    <!-- Account Information -->
+    <aura:attribute type="Account" name="account" />
+    <!-- Who fired this event; just for logging if needed and not required  -->
+    <aura:attribute type="String" name="context" />
+</aura:event>

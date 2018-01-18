@@ -1,0 +1,9 @@
+<aura:event type="APPLICATION" description="Event template">
+    <aura:attribute name="title" type="String" description="Modal Title"/>
+    <aura:attribute name="tagline" type="String" description="Modal Tagline or Description"/>
+    <aura:attribute name="componentName" type="String" description="Name of the object to be injected"/>
+    <aura:attribute name="componentParams" type="Object" description="Map of Component Parameters"/>
+
+
+    <aura:attribute name="footerButtons" type="Object[]" description="List of Buttons in the footer (if any)"/>
+</aura:event>

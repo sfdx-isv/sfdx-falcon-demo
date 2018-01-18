@@ -1,0 +1,36 @@
+<aura:component access="global">
+    <aura:handler event="c:uiModalShowEvent" action="{!c.showModal}"/>
+    <aura:attribute name="title" type="String" access="private" description="Modal Title" default="Modal Title"/>
+    <aura:attribute name="tagline" type="String" access="private" description="Modal Tagline"/>
+    <aura:attribute name="footerButtons" type="Object[]" access="private" description="Footer buttons" />
+    <aura:attribute name="_modalContent" type="object" access="private" description="Object to hold component for destroy" />
+
+    <div class="slds-modal" aria-hidden="true" role="dialog" aura:id="modalShell">
+        <div class="slds-modal__container">
+            <div class="slds-modal__header">
+                <button class="slds-button slds-button--icon-inverse slds-modal__close" onclick="{!c.hideModal}">
+                    <lightning:icon iconName="utility:close" size="large" alternativeText="Close"/>
+                    <span class="slds-assistive-text">Close</span>
+                </button>
+                <p class="slds-text-heading--medium">{!v.title}</p>
+                <aura:renderIf isTrue="{!v.tagline !=null &amp;&amp; v.tagline !=''}">
+                    <p class="slds-m-top--x-small">
+                        <aura:unescapedHtml value="{!v.tagline}"/>
+                    </p>
+                </aura:renderIf>
+            </div>
+            <div class="slds-modal__content slds-p-around--small">
+                    {!v.body}
+
+            </div>
+            <aura:if isTrue="{!v.footerButtons.length > 0}">
+
+                <aura:iteration items="{!v.footerButtons}" var="button">
+                    <button class="{! 'slds-button slds-button--' + button.type}" onclick="{!button.action}">{!button.name}</button>
+                </aura:iteration>
+            </aura:if>
+
+        </div>
+    </div>
+    <div class="slds-backdrop slds-backdrop" aura:id="modalBackDrop"></div>
+</aura:component>

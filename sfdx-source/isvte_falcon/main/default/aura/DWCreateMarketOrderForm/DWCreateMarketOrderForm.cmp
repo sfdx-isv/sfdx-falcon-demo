@@ -1,0 +1,107 @@
+<aura:component description="DWCreateMarketOrderForm" controller="DWCreateOrder_Controller">
+    
+    <!-- To store DriveWealth accounts (practice/live acocunt); needed so users can select which account to place order against-->
+    <aura:attribute type="Account" name="acc" access="public"/>
+    
+    <!-- Workaround for strange bug where related records are not loaded the first time -->
+    <!-- https://org62.lightning.force.com/one/one.app#/sObject/0D50M000032hJOwSAM/view-->
+    <aura:attribute type="Object[]" name="dwAccRecords" access="public"/>
+    <!-- Workaround  -->
+    
+    <!-- Instrument information for order -->
+    <aura:attribute name="instrument" type="DriveWealthJsonInstrument" access="public" />
+    
+    <!-- debug Apex code -->
+    <aura:attribute name="debug" type="Boolean" default="false" access="public"/>
+    <aura:attribute name="debugClient" type="Boolean" default="false" access="public" />
+    
+    
+    <!-- Store order if it was successfully submitted -->
+    <aura:attribute name="order" type="DriveWealthJsonMarketOrder"  />
+    
+    <!-- For using ApexBridge Library -->
+    <c:ETLC_ApexBridge aura:id="ApexBridge" debugServer="{!v.debug}" debugClient="{!v.debugClient}"/>
+    
+    <!-- For using Utils library -->
+    <c:Utils debugClient="{!v.debugClient}" aura:id="utils"  />
+    
+    <aura:attribute name="dworder" type="DW_Order__c" access="public"
+                    default="{
+                             'sobjectType': 'DW_Order__c',
+                             'Order_Type__c': '1',
+                             'DW_Account__c': '',
+                             'Side__c': 'B',
+                             'Order_Quantity__c': 0,
+                             'Comment__c': ''
+                             }"  />
+    
+    <!--Setup initial information for creating a market order-->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    
+    
+    <aura:registerEvent name="appEvent" type="c:EvtOrderCreated"  />
+    
+    
+    <div  class="slds-box slds-theme_default">
+        <!-- ui:message will added in this div via createComponents() -->
+        <div aura:id="uiMessage"></div>
+        
+        <ui:spinner aura:id="spinner" isVisible="false"/>            
+        
+        <!-- Input Form using components -->
+        <div   aura:id="createOrderForm">
+            <div class="slds-form-element">
+                <label class="slds-form-element__label" >Selected Instrument</label>
+                <div class="slds-form-element__control">
+                    <ui:outputText value="{!v.instrument.symbol}" /> -
+                    <ui:outputText value="{!v.instrument.name}" />
+                </div>
+            </div>
+            <div class="slds-form-element slds-is-required">
+                <div class="slds-form-element__control">
+                    <lightning:select aura:id="ordType" name="ordType" label="Order Type" required="true" value="{!v.dworder.Order_Type__c}">
+                        <option value="1">Market Order</option>
+                    </lightning:select>
+                </div>
+            </div>
+            <a class="{! v.dworder == '/active' ? 'selected' : ''}" href="#/active">Active</a>
+            <div class="slds-form-element slds-is-required">
+                <div class="slds-form-element__control">
+                    <lightning:select aura:id="accountID" name="accountID" label="Select DriveWealth Account" required="true"
+                                      value="{!v.dworder.DW_Account__c}"
+                                      messageWhenValueMissing="Please select an Account!">
+                        <option value="">Select an Account</option>
+                        <aura:iteration items="{!v.dwAccRecords}" var="obj">
+                            <option value="{!obj.Id}">{!obj.Name}</option>
+                        </aura:iteration>
+                    </lightning:select>
+                </div>
+            </div>
+            <div class="slds-form-element slds-is-required">
+                <div class="slds-form-element__control">
+                    <lightning:select aura:id="side" name="side" label="Side of Order:" required="true" value="{!v.dworder.Side__c}">
+                        <option value="B">Buy</option>
+                        <option value="S">Sell</option>
+                    </lightning:select>
+                </div>
+            </div>
+            <div class="slds-form-element">
+                <div class="slds-form-element__control">
+                    <lightning:input label="Quantity" aura:id="orderQty" name="orderQty" type="number" required="true"
+                                     value="{!v.dworder.Order_Quantity__c}"
+                                     messageWhenBadInput="Please enter a number"
+                                     />
+                </div>
+            </div>
+            <div class="slds-form-element">
+                <div class="slds-form-element__control">
+                    <lightning:input label="Comment" aura:id="comment" name="comment" type="text" value="{!v.dworder.Comment__c}" />
+                </div>
+            </div>
+            <div class="slds-form-element">
+                <lightning:button label="Submit Order" onclick="{!c.submitOrder}" />
+            </div>
+        </div><!-- ./container-->
+    </div>
+    
+</aura:component>

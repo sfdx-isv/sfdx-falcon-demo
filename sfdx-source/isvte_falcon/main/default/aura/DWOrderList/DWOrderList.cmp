@@ -1,0 +1,163 @@
+<aura:component description="DWOrderStatus" 
+                implements="force:hasRecordId">
+  <!-- 
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┐
+  * Define component attributes.
+  * ────────────────────────────────────────────────────────────────────────────────────────────────
+  * debug                       Boolean   Determines if component will enter extended debug mode.
+  * debugClient                 Boolean   TODO: ?????
+  * recordID                    String    Salesforce Account where the component is placed.
+  * isCommunity                 Boolean   If component is loaded from community then set this to true.
+  * hasOrderHistory             Boolean   Determines if the associated account has any DW Orders.
+  * orders                      Object[]  ????
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┘
+  -->
+  <aura:attribute name="debug"                type="Boolean"  default="false" access="global" />
+  <aura:attribute name="debugClient"          type="Boolean"  default="false" access="global" />
+  <aura:attribute name="recordId"             type="String" /> 
+  <aura:attribute name="isCommunity"          type="Boolean"  default="false" access="global" />
+  <aura:attribute name="hasOrderHistory"      type="Boolean"  default="false" />
+  <aura:attribute name="orders"               type="Object[]" default="{'sobjectType': 'DW_Order__c',
+                                                                        'Order_Type__c': '1',
+                                                                        'DW_Account__c': '',
+                                                                        'Account__c': '',
+                                                                        'Side__c': 'B',
+                                                                        'Order_Quantity__c': 0,
+                                                                        'Comment__c': '',
+                                                                        'Executed_When__c': '',
+                                                                        'Expires_Time_Stamp__c': '',
+                                                                        'Instrument_Name__c': '',
+                                                                        'Order_Status__c': '',
+                                                                        'CreatedDate': ''}" />
+
+  <!-- 
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┐
+  * Include non-rendering helper components.
+  * ────────────────────────────────────────────────────────────────────────────────────────────────
+  * ETLC_ApexBridge   Provides access to the Apex Bridge library, a utiltiy for making controller
+  *                   calls from inside of a Lightning Component.
+  *                   - debugServer (required): ????
+  *                   - debugClient (optional): Puts the component into debug mode.
+  * Utils             Basic set of common utilities.  Used to display error messages in the 
+  *                   component.  Also used for extended logging/messaging.
+  *                   - debugClient (required): Puts the component into debug mode.
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┘
+  -->
+  <c:ETLC_ApexBridge  aura:id="ApexBridge"  debugClient="{!v.debugClient}" debugServer="{!v.debug}" />
+  <c:Utils            aura:id="utils"       debugClient="{!v.debugClient}" />
+
+  <!-- 
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┐
+  * Define event handlers.
+  * ────────────────────────────────────────────────────────────────────────────────────────────────
+  * init                Component         Component init handler.
+  * EvtOrderCreated     Application       Fired when a new DriveWealth order is placed successfully.
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┘
+  -->
+  <aura:handler name="init"               value="{!this}"             action="{!c.doInit}" />
+  <aura:handler                           event="c:EvtOrderCreated"   action="{!c.handleEvtOrderCreated}" />
+
+
+  <!-- 
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┐
+  * Begin body content.
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┘
+  -->
+  <div class="slds-box slds-theme_default">
+    <aura:if isTrue="{!not(v.hasOrderHistory)}">
+      <ui:message aura:id="noOrderHistoryMsg" title="No DriveWealth Orders Found" severity="info">
+          <p class="flashing">No DriveWealth orders have been placed by this account.</p>
+      </ui:message>
+    </aura:if>
+
+    <!-- ui:message will added in this div via createComponents() -->
+    <div aura:id="uiMessage"></div>
+
+    <!-- Show the Order History List if there are more than zero orders in the orders array -->
+    <!--<aura:if isTrue="{!v.orders.length > 0}">-->
+    <aura:if isTrue="{!v.hasOrderHistory}">
+      <table class="slds-table 
+                    slds-table_bordered 
+                    slds-max-medium-table_stacked-horizontal 
+                    slds-table_striped 
+                    slds-no-row-hover">
+      <!-- TABLE HEADER -->
+        <thead>
+          <tr class="slds-line-height_reset">
+            <th class="slds-text-title_caps" scope="col">
+              Status
+            </th>
+            <th class="slds-text-title_caps" scope="col">
+              Exec Date
+            </th>
+            <th class="slds-text-title_caps" scope="col">
+              Symbol
+            </th>
+            <th class="slds-text-title_caps" scope="col">
+              Buy/Sell
+            </th>
+            <th class="slds-text-title_caps" scope="col">
+              QTY
+            </th>
+            <aura:if isTrue="{! not(v.isCommunity)}">
+              <th class="slds-text-title_caps slds-text-align_center" scope="col">
+                <div class="slds-th__action slds-th__action_form">
+                  Fetch 4 Status
+                </div>
+              </th>
+            </aura:if>
+          </tr>
+        </thead>
+      <!-- TABLE BODY -->
+        <tbody>
+          <aura:iteration items="{!v.orders}" var="obj" indexVar="key">
+            <tr>
+              <td data-label="Status">
+                <div class="slds-truncate" title="{!obj.value.Order_Status__c}">
+                  {!obj.value.Order_Status__c}
+                </div>
+              </td>
+              <td data-label="Exec Date">
+                <div class="slds-truncate" title="{!obj.value.Executed_When__c}">
+                  {!obj.value.Executed_When__c}
+                </div>
+              </td>
+              <td data-label="Symbol">
+                <div class="slds-truncate" title="{!obj.value.Instrument_Symbol__c}">
+                  {!obj.value.Instrument_Symbol__c}
+                </div>
+              </td>
+              <td data-label="Buy/Sell">
+                <div class="slds-truncate" title="{!obj.value.Side__c}">
+                  {!obj.value.Side__c}
+                </div>
+              </td>
+              <td data-label="QTY">
+                <div class="slds-truncate" title="{!obj.value.Order_Quantity__c}">
+                  {!obj.value.Order_Quantity__c}
+                </div>
+              </td>
+              <aura:if isTrue="{! not(v.isCommunity)}">
+                <td data-label="Fetch Status" class="slds-text-align_center">
+                  <div class="slds-truncate" title="Fetch Status">
+                    <lightning:button label="Fetch Status" 
+                                      value="{!key}" 
+                                      onclick="{!c.fetchStatus}" />
+                  </div>
+                </td>
+              </aura:if>
+            </tr>
+          </aura:iteration>
+        </tbody>
+      </table>
+<!--
+      <aura:set attribute="else">
+        <ui:message aura:id="noOrderMsg" title="No Orders" severity="info" class="slds-hide">
+          No orders have been created for this account.
+        </ui:message>
+      </aura:set>
+-->
+    </aura:if>
+  </div>
+
+</aura:component>

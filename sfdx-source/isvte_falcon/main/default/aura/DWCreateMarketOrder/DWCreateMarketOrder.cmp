@@ -1,0 +1,89 @@
+<aura:component implements="force:hasRecordId" 
+                access="global">
+  <!-- 
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┐
+  * Define component attributes.
+  * ────────────────────────────────────────────────────────────────────────────────────────────────
+  * debug                       Boolean   Determines if component will enter extended debug mode.
+  * debugClient                 Boolean   TODO: ?????
+  * recordID                    String    Salesforce Account where the component is placed.
+  * acc                         Account   Stores DriveWealth accounts (practice/live acocunt).
+  *                                       Allows user to select which account to place order against.
+  * instrument  DriveWealthJsonInstrument   JSON object representing a single
+  *                                         instrument that can be ordered.
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┘
+  -->
+  <aura:attribute name="debug"                type="Boolean"  default="false" access="global" />
+  <aura:attribute name="debugClient"          type="Boolean"  default="false" access="global" />
+  <aura:attribute name="recordId"             type="String" /> 
+  <aura:attribute name="acc"                  type="Account" />
+  <aura:attribute name="instrument"           type="DriveWealthJsonInstrument" />
+  <aura:attribute name="allowOrders"          type="Boolean"  default="true" />
+  <aura:attribute name="orderFormHeaderText"  type="String"   default="Step One: Choose Financial Instrument" />
+  
+
+  <!-- 
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┐
+  * Include non-rendering helper components.
+  * ────────────────────────────────────────────────────────────────────────────────────────────────
+  * ETLC_ApexBridge   Provides access to the Apex Bridge library, a utiltiy for making controller
+  *                   calls from inside of a Lightning Component.
+  *                   - debugServer (required): ????
+  *                   - debugClient (optional): Puts the component into debug mode.
+  * Utils             Basic set of common utilities.  Used to display error messages in the 
+  *                   component.  Also used for extended logging/messaging.
+  *                   - debugClient (required): Puts the component into debug mode.
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┘
+  -->
+  <c:ETLC_ApexBridge  aura:id="ApexBridge"  debugClient="{!v.debugClient}" debugServer="{!v.debug}" />
+  <c:Utils            aura:id="utils"       debugClient="{!v.debugClient}" />
+
+
+  <!-- 
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┐
+  * Define event handlers.
+  * ────────────────────────────────────────────────────────────────────────────────────────────────
+  * init                Component         Setup initial information for creating a market order.
+  * EvtInstrumentInfo   Component         Capture Instrument Info.
+  * EvtAccountCreated   Application       Fired when a new DriveWealth Account is created.
+  * EvtOrderCreated     Application       Fired when a new DriveWealth order is placed successfully.
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┘
+  -->
+  <aura:handler name="init"               value="{!this}"             action="{!c.doInit}" />
+  <aura:handler name="EvtInstrumentInfo"  event="c:EvtInstrumentInfo" action="{!c.handleEvtInstrumentInfo}" />
+  <aura:handler                           event="c:EvtAccountCreated" action="{!c.handleEvtAccountCreated}" />
+  <aura:handler                           event="c:EvtOrderCreated"   action="{!c.handleEvtOrderCreated}" />
+
+  <!-- 
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┐
+  * Begin body content.
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┘
+  -->
+  <div aura:id="orderFormContainer" class="slds-box slds-theme_default">
+    <!-- Order Header -->
+    <!-- ONLY Show search button only if there is a DW account -->
+    <aura:if isTrue="{!v.allowOrders}">
+        <lightning:card aura:id="OrderFormHeader" title="{!v.orderFormHeaderText}" class="flashit">
+          <aura:set attribute="actions">
+            <lightning:button aura:id="StartAgainButton" label="Start Again" onclick="{!c.searchSymbol}" disabled="true" />
+          </aura:set>
+        </lightning:card>
+        <!-- Placeholder for Symbol Search component -->
+        <div aura:id="searchSymbol">
+            {!v.body}
+        </div>
+        <!-- Placeholder for the Market Order Form -->
+        <div aura:id="createMarketOrderForm">
+            {!v.body}
+        </div>
+  
+      <!-- can't see symbol search or create market order form if there is not account with DriveWealth -->
+      <aura:set attribute="else">
+        <ui:message aura:id="noAccountMsg" title="No DriveWealth Account" severity="info">
+          <p class="flashing">You must create a DriveWealth account before creating orders</p>
+        </ui:message>
+      </aura:set>
+    </aura:if>
+
+  </div>
+</aura:component>

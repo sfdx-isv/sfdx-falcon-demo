@@ -1,0 +1,11 @@
+.THIS.flashDWPanel {
+  animation-name: flashDWPanel;
+  animation-duration: 1s;
+  animation-direction: normal;
+  animation-iteration-count: 1;
+}
+@keyframes flashDWPanel {
+  0%    { background: default; }
+  50%   { background: #d9ffdf; }
+  100%  { background: default; }
+}

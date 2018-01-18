@@ -1,0 +1,39 @@
+<aura:component description="DWSearchInstrument" implements="forceCommunity:availableForAllPageTypes" access="global">
+    <!-- debug Apex code -->
+    <aura:attribute name="debug" type="Boolean" default="false" access="global"/>
+    <aura:attribute name="debugClient" type="Boolean" default="false" access="global" />
+
+    <!-- Search Instrument,Create DW Account,List DW Orders -->
+    <aura:attribute name="componentToLoad" type="string" required="true" access="global"/>
+
+
+
+
+    <aura:attribute name="AccountId" type="Id"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <!-- For using ApexBridge Library -->
+    <c:ETLC_ApexBridge aura:id="ApexBridge" debugServer="{!v.debug}" debugClient="{!v.debugClient}"/>
+
+    <!-- For using Utils library -->
+    <c:Utils debugClient="{!v.debugClient}" aura:id="utils"  />
+
+
+    <aura:if isTrue="{!v.AccountId}">
+        <aura:if isTrue="{!v.componentToLoad == 'Search Instrument'}">
+            <c:DWSearchInstrument debug="{!v.debug}" debugClient="{!v.debugClient}" recordId="{!v.AccountId}" />
+        </aura:if>
+
+        <aura:if isTrue="{!v.componentToLoad == 'Create DW Account'}">
+            <c:DWCreateAccountForm debug="{!v.debug}" debugClient="{!v.debugClient}" recordId="{!v.AccountId}" />
+        </aura:if>
+
+        <aura:if isTrue="{!v.componentToLoad == 'List DW Orders'}">
+            <c:DWOrderList isCommunity="{!v.isCommunity}" debug="{!v.debug}" debugClient="{!v.debugClient}" recordId="{!v.AccountId}" />
+        </aura:if>
+        <aura:set attribute="else">
+            Current user might not be a contact or not associated to an account to show "{!v.componentToLoad}" component
+        </aura:set>
+    </aura:if>
+</aura:component>

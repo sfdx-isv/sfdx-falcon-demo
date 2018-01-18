@@ -1,0 +1,42 @@
+<aura:component description="DriveWealth Order Panel" 
+                implements="force:hasRecordId" 
+                access="global">
+  <!-- 
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┐
+  * Define component attributes.
+  * ────────────────────────────────────────────────────────────────────────────────────────────────
+  * debug           Boolean                 Determines if component will enter extended debug mode.
+  * debugClient     Boolean                 TODO: ?????
+  * recordID        String                  Salesforce Account where the component is placed.
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┘
+  -->
+  <aura:attribute name="debug"        type="Boolean"  default="false" access="global" />
+  <aura:attribute name="debugClient"  type="Boolean"  default="false" access="global" />
+  <aura:attribute name="recordId"     type="String"  />
+
+  <!-- 
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┐
+  * Body Content: The "Create Order" panel.
+  *
+  * This panel should only be rendered if there is a valid DriveWealth account.  
+  * TODO: Alternatively, if we could disable all the controls inside of the order panel, that 
+  *       would work to show that you can't place an order if you don't have a DW Account.
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┘
+  -->
+  <div aura:id="OrderPanel" class="slds-section slds-is-open">
+    <h3 class="slds-section__title">
+      <lightning:button aura:id="OrderPanelHeader" 
+                        label="Create Order"
+                        class="slds-button slds-section__title-action"
+                        onclick="{!c.toggleOrderPanel}" 
+                        iconName="utility:chevrondown" 
+                        iconPosition="left" />
+    </h3>
+    <div class="slds-section__content" id="expando-unique-id">
+      <c:DWCreateMarketOrder  aura:id="DWCreateOrder" 
+                              debugClient="{!v.debugClient}" 
+                              recordId="{!v.recordId}" />    
+    </div>
+  </div>
+
+</aura:component>	

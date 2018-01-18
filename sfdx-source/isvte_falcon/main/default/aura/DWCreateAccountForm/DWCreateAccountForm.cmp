@@ -1,0 +1,218 @@
+<aura:component description="DWCreateAccountForm" 
+                implements="force:hasRecordId"  
+                access="global">
+  <!-- 
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┐
+  * Define component attributes.
+  * ────────────────────────────────────────────────────────────────────────────────────────────────
+  * debug           Boolean     Determines if component will enter extended debug mode.
+  * debugClient     Boolean     TODO: ?????
+  * acc             Account     Workaround for strange bug where related records are not loaded
+  *                             the first time.  See the following URL for more info:
+  *                             https://org62.lightning.force.com/one/one.app#/sObject/0D50M000032hJOwSAM/view
+  * recordID        String      Salesforce Account where the component is placed.
+  * record          Object      ???
+  * simpleRecord    Object      ???
+  * recordError     String      ???
+  * fname           String      ???
+  * lname           String      ???
+  * uname           String      ???
+  * passwd          String      ???
+  * email           String      ???
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┘
+  -->
+  <aura:attribute name="debug"        type="Boolean"  default="false" access="global" />
+  <aura:attribute name="debugClient"  type="Boolean"  default="false" access="global" />
+  <aura:attribute name="acc"          type="Account"                  access="public" />
+  <aura:attribute name="recordId"     type="String" />
+  <aura:attribute name="record"       type="Object" />
+  <aura:attribute name="simpleRecord" type="Object" />
+  <aura:attribute name="recordError"  type="String" />
+  <aura:attribute name="fname"        type="String"   default="" />
+  <aura:attribute name="lname"        type="String"   default="" />
+  <aura:attribute name="uname"        type="String"   default="" />
+  <aura:attribute name="passwd"       type="String"   default="" />
+  <aura:attribute name="email"        type="String"   default="" />
+  
+
+  <!-- 
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┐
+  * Include non-rendering helper components.
+  * ────────────────────────────────────────────────────────────────────────────────────────────────
+  * ETLC_ApexBridge   Provides access to the Apex Bridge library, a utiltiy for making controller
+  *                   calls from inside of a Lightning Component.
+  *                   - debugServer (required): ????
+  *                   - debugClient (optional): Puts the component into debug mode.
+  * Utils             Basic set of common utilities.  Used to display error messages in the 
+  *                   component.  Also used for extended logging/messaging.
+  *                   - debugClient (required): Puts the component into debug mode.
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┘
+  -->
+  <c:ETLC_ApexBridge aura:id="ApexBridge" debugServer="{!v.debug}" debugClient="{!v.debugClient}"/>
+  <c:Utils debugClient="{!v.debugClient}" aura:id="utils"  />
+
+  <!-- 
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┐
+  * Setup event handlers
+  * ────────────────────────────────────────────────────────────────────────────────────────────────
+  * init              Setup initial information for creating an account.
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┘
+  -->
+  <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+  <!-- 
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┐
+  * Register events.
+  * ────────────────────────────────────────────────────────────────────────────────────────────────
+  * cmpEvent          Setup initial information for creating an account.
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┘
+  -->
+  <aura:registerEvent name="cmpEvent" type="c:EvtAccountCreated"  />
+
+  <!-- 
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┐
+  * Utilize force:recordData to get access to DWAccount information from the Account record.
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┘
+  -->
+  <force:recordData aura:id="forceRecord"
+                    recordId="{!v.recordId}"
+                    layoutType="FULL"
+                    targetRecord="{!v.record}"
+                    targetFields="{!v.simpleRecord}"
+                    targetError="{!v.recordError}"
+                    recordUpdated="{!c.handleRecordUpdate}" 
+  />
+
+  <!-- 
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┐
+  * Begin body content.
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┘
+  -->
+  
+  <div class="slds-box slds-theme_default">
+
+  <!-- IF: There is already a DW Account, set the title to "DriveWealth Account Details"   -->
+    <aura:if isTrue="{!v.simpleRecord.DW_User_ID__c}">
+      <lightning:card>
+        <aura:set attribute="title">
+          DriveWealth Account Details
+        </aura:set>
+      </lightning:card>
+  <!-- ELSE: Set the title to "Create DriveWealth Account"   -->
+      <aura:set attribute="else">
+        <lightning:card>
+          <aura:set attribute="title">
+            Create DriveWealth Account
+          </aura:set>
+        </lightning:card>
+      </aura:set>
+    </aura:if>
+
+  <!-- Create a placeholder for UI Messages.  ui:message will added in this div via createComponents() -->
+    <div aura:id="uiMessage"></div>
+  
+  <!-- Add a spinner. -->
+    <ui:spinner aura:id="spinner" isVisible="false" />
+
+  <!-- IF: There is already a DW Account, show the current DW Account information -->
+    <aura:if isTrue="{!v.acc.DW_User_ID__c}">
+      <div aura:id="showAccountForm">
+        <div class="slds-form-element slds-is-required">
+          <!-- Account Name -->
+          <div class="slds-form-element__control">
+            <label class="slds-form-element__label">DW Account Name</label>
+            <div class="slds-form-element__control">
+              <ui:outputText value="{!v.acc.DW_Accounts__r.records[0].Name}" />
+            </div>
+          </div>
+          <br/>
+          <!-- Account Number -->
+          <div class="slds-form-element__control">
+            <label class="slds-form-element__label">DW Account Number</label>
+            <div class="slds-form-element__control">
+              <ui:outputText value="{!v.acc.DW_Accounts__r.records[0].Account_No__c}" />
+            </div>
+          </div>
+          <br/>
+          <!-- Account Type -->
+          <div class="slds-form-element__control">
+            <label class="slds-form-element__label">DW Account Type</label>
+            <div class="slds-form-element__control">
+              <aura:If isTrue="{!v.acc.DW_Accounts__r.records[0].Account_Type__c==1}">
+                <ui:outputText value="Practice Account" />
+              </aura:If>
+            </div>
+          </div>
+          <br/>
+          <!-- Date Created -->
+          <div class="slds-form-element__control">
+            <label class="slds-form-element__label">When was this created</label>
+            <div class="slds-form-element__control">
+              <ui:outputText value="{!v.acc.DW_Accounts__r.records[0].Created_When__c}" />
+            </div>
+          </div>
+          <br/>
+        </div>
+      </div>
+
+  <!-- ELSE: Show the form to create a NEW DWAccount. -->
+
+      <aura:set attribute="else">
+        <div aura:id="createAccountForm">
+          <!-- First Name Field -->
+          <div>
+            <lightning:input  aura:id="fname" 
+                              name="fname" 
+                              label="First Name" 
+                              type="text" 
+                              required="true" 
+                              value="{!v.fname}" />
+          </div>
+          <!-- Last Name Field -->
+          <div>
+            <lightning:input  aura:id="lname"
+                              name="lname"
+                              label="Last Name"
+                              type="text"
+                              required="true"
+                              value="{!v.lname}" />
+          </div>
+          <!-- Email Field -->
+          <div>
+            <lightning:input  aura:id="email" 
+                              name="email" 
+                              label="Email (Set from DW Email on Account)" 
+                              type="email"
+                              required="true" 
+                              disabled="true"
+                              value="{!v.simpleRecord.DW_Email__c}" />
+          </div>
+          <!-- User Name Field -->
+          <div>
+            <lightning:input  aura:id="uname"
+                              name="uname"
+                              label="User Name"
+                              type="text" 
+                              required="true"                              
+                              value="{!v.uname}" />
+          </div>
+          <!-- Password Field -->
+          <div>
+            <lightning:input  aura:id="passwd" 
+                              name="passwd"
+                              label="Password (Must be 8-90 characters long)"
+                              type="text" 
+                              required="true" 
+                              value="{!v.passwd}" />
+          </div>
+          <!-- Create Account Button -->
+          <div>
+            <lightning:button label="Create Account" onclick="{!c.createAccount}" />
+          </div>
+        </div>
+        <!-- ./container-->
+      </aura:set>
+
+    </aura:if>
+  </div>
+</aura:component>

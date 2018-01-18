@@ -1,0 +1,49 @@
+<aura:component description="DriveWealth Symbol Search Panel" 
+                implements="force:hasRecordId" 
+                access="global">
+  <!-- 
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┐
+  * Define component attributes.
+  * ────────────────────────────────────────────────────────────────────────────────────────────────
+  * debug           Boolean                 Determines if component will enter extended debug mode.
+  * debugClient     Boolean                 TODO: ?????
+  * recordID        String                  Salesforce Account where the component is placed.
+  * acc             Account                 DriveWealth account (practice/live acocunt). 
+  *                                         Needed so users can select which account to place
+  *                                         an order against.
+  * instrument      DriveWealthInstrument   Financial instrument related to a DriveWealth order.
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┘
+  -->
+  <aura:attribute name="debug"        type="Boolean"  default="false" access="global" />
+  <aura:attribute name="debugClient"  type="Boolean"  default="false" access="global" />
+  <aura:attribute name="recordId"     type="String"  />
+
+
+
+  <!-- 
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┐
+  * Body Content: The "Symbol Search" panel.
+  *
+  * This panel should only be rendered if the "DriveWealth Symbol Search" feature has been enabled
+  * for this org and activated by the org's administrator.
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┘
+  -->
+  <div aura:id="SymbolSearchPanel" class="slds-section slds-is-open">
+    <h3 class="slds-section__title">
+      <lightning:button aura:id="SymbolSearchPanelHeader" 
+                        label="Stock Symbol Search"
+                        class="slds-button slds-section__title-action"
+                        onclick="{!c.toggleSymbolSearchPanel}" 
+                        iconName="utility:chevrondown" 
+                        iconPosition="left" />
+    </h3>
+    <div class="slds-section__content" id="expando-unique-id">
+      <c:DWSearchInstrument aura:id="DWSearchInstrument"
+                            debugClient="{!v.debugClient}"
+                            showHeader="false"
+                            allowOrderPlacement="false"
+                            recordId="{!v.recordId}" />
+    </div>
+  </div>
+
+</aura:component>	

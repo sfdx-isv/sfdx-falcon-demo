@@ -1,0 +1,6 @@
+<design:component >
+    <design:attribute name="debug" label="Debug Apex" />
+    <design:attribute name="debugClient" label="Debug Javascript" />
+    <design:attribute name="componentToLoad" label="Component to Load" datasource="Search Instrument,Create DW Account,List DW Orders"/>
+
+</design:component>

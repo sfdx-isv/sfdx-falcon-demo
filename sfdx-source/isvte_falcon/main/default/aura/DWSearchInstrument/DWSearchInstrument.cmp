@@ -1,0 +1,147 @@
+<aura:component description="DWSearchInstrument" 
+                implements="force:hasRecordId"
+                access="global">
+  <!-- 
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┐
+  * Define component attributes.
+  * ────────────────────────────────────────────────────────────────────────────────────────────────
+  * debug                       Boolean   Determines if component will enter extended debug mode.
+  * debugClient                 Boolean   TODO: ?????
+  * recordID                    String    Salesforce Account where the component is placed.
+  * allowOrderPlacement       Boolean   Determines whether to show button to fire Instrument info event
+  * fireEvtInstrumentInfoName   String    ???
+  * showHeader                  Boolean   ???
+  * symbol                      String    The stock symbol being searched for.
+  * instrumentList              DriveWealthJsonInstrument[]   Array of JSON objects representing 
+  *                                                           intruments returned by the search. 
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┘
+  -->
+  <aura:attribute name="debug"        type="Boolean"  default="false" access="global" />
+  <aura:attribute name="debugClient"  type="Boolean"  default="false" access="global" />
+  <aura:attribute name="recordId"     type="String" /> 
+
+  <aura:attribute name="allowOrderPlacement"        type="Boolean"  default="false" />
+  <aura:attribute name="fireEvtInstrumentInfoName"  type="String"   default="Place Order" />
+  <aura:attribute name="showHeader"                 type="Boolean"  default="True" />
+
+  <aura:attribute name="symbol"                     type="String"   default="CRM"/>
+  <aura:attribute name="instrumentList"             type="DriveWealthJsonInstrument[]" />
+
+
+  <!-- 
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┐
+  * Include non-rendering helper components.
+  * ────────────────────────────────────────────────────────────────────────────────────────────────
+  * ETLC_ApexBridge   Provides access to the Apex Bridge library, a utiltiy for making controller
+  *                   calls from inside of a Lightning Component.
+  *                   - debugServer (required): ????
+  *                   - debugClient (optional): Puts the component into debug mode.
+  * Utils             Basic set of common utilities.  Used to display error messages in the 
+  *                   component.  Also used for extended logging/messaging.
+  *                   - debugClient (required): Puts the component into debug mode.
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┘
+  -->
+  <c:ETLC_ApexBridge  aura:id="ApexBridge"  debugClient="{!v.debugClient}" debugServer="{!v.debug}" />
+  <c:Utils            aura:id="utils"       debugClient="{!v.debugClient}" />
+    
+  <!-- 
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┐
+  * Setup event handlers
+  * ────────────────────────────────────────────────────────────────────────────────────────────────
+  * init              Setup initial information for creating a market order.
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┘
+  -->
+  <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    
+  <!-- 
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┐
+  * Register events.
+  * ────────────────────────────────────────────────────────────────────────────────────────────────
+  * EvtInstrumentInfo   Component Event   Raise event for selected symbol to place order.
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┘
+  -->
+  <aura:registerEvent name="EvtInstrumentInfo" type="c:EvtInstrumentInfo" />
+    
+    
+  <!-- 
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┐
+  * Begin body content.
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┘
+  -->
+  <div class="slds-box slds-theme__default">
+
+    <!-- Header for this section. Can be turned on or off -->
+    <div class="{!v.showHeader == true ? 'slds-show' : 'slds-hide'}">
+      <lightning:card>
+        <aura:set attribute="title">
+          Search Symbol
+        </aura:set>
+      </lightning:card>
+    </div>
+    
+    <!-- ui:message will added in this div via createComponents() -->
+    <div aura:id="uiMessage"></div>
+        
+        <!-- Input Form using components -->
+        <div  class="slds-form slds-form_stacked">
+            <div class="slds-form-element">
+                <div class="slds-form-element__control">
+                    <lightning:input  label="Symbol (comma separated list; NO spaces)" 
+                                      aura:id="symbol" 
+                                      name="symbol" 
+                                      messageWhenBadInput="Please enter a symbol to search"
+                                      type="text" 
+                                      required="true"
+                                      value="{!v.symbol}" />
+                </div>
+            </div>
+            
+            <div class="slds-form-element">
+                <div class="slds-form-element__control">
+                    <lightning:button label="Search" onclick="{!c.searchSymbol}" />
+                </div>
+            </div>
+        </div>
+        
+        <ui:spinner aura:id="spinner" isVisible="false"/>
+        
+        <aura:if isTrue="{!v.instrumentList.length > 0}">
+            <br/>
+            <table class="slds-table slds-table_bordered slds-max-medium-table_stacked-horizontal slds-table_striped">
+                <thead>
+                    <tr class="slds-text-title_caps">
+                        <th scope="col">
+                            <div class="slds-truncate" title="Symbol">Symbol</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Rate Ask">Rate Ask</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Rate Bid">Rate Bid</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Rate Bid">Trade Status</div>
+                        </th>
+                        <aura:if isTrue="{!v.allowOrderPlacement}">
+                            <th scope="col">
+                                <div class="slds-truncate" title="Action">Action</div>
+                            </th>
+                        </aura:if>
+                    </tr>
+                </thead>
+                <tbody>
+                    <aura:iteration items="{!v.instrumentList}" var="obj">
+                        <c:DWSearchInstrumentRow data="{!obj}"
+                                                 allowOrderPlacement="{!v.allowOrderPlacement}"
+                                                 fireEvtInstrumentInfoName="{!v.fireEvtInstrumentInfoName}"
+                                                 debug="{!v.debug}" debugClient="{!v.debugClient}"
+                                                 placeOrderAction="{!c.placeOrder}"
+                                                 
+                                                 />
+                    </aura:iteration>
+                </tbody>
+            </table>
+        </aura:if>
+    </div>
+    
+</aura:component>

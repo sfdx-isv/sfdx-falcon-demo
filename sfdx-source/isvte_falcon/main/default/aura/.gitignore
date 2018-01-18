@@ -19,13 +19,13 @@
 # specific feature module within this package directory (ie. into a sibling of
 # main/default)
 ################################################################################
-
+# TODO: Need to come back and determine which Aura components are core and what goes in features
 # Ignore everything...
-*
+#*
 
 # Except the following files...
-!.gitignore
-!README.md
+#!.gitignore
+#!README.md
 
 # And each Aura component bundle listed below...
 # (ie. your whitelisted Aura component bundles)

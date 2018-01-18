@@ -1,0 +1,25 @@
+<!--
+    Utility component to add functions like log etc
+ -->
+<aura:component description="Utils"  >
+    <aura:attribute name="debugClient" type="Boolean" default="false" access="public"/>
+    <aura:method name="log" action="{!c.log}">
+        <!--<aura:attribute name="message" type="String" />-->
+    </aura:method>
+    <aura:method name="createComponent" action="{!c.createComponent}">
+        <aura:attribute name="componentToCreate" type="String" />
+        <aura:attribute name="componentParams" type="Object" />
+        <aura:attribute name="componentPlaceholder" type="Object" />
+    </aura:method>
+    <aura:method name="createComponents" action="{!c.createComponents}">
+        <aura:attribute name="componentsToCreate" type="Object[]" />
+        <aura:attribute name="componentPlaceholder" type="Object" />
+    </aura:method>
+    <aura:method name="destroyComponents" action="{!c.destroyComponents}">
+        <aura:attribute name="componentPlaceholder" type="Object" />
+    </aura:method>
+    <aura:method name="toggleSpinner" action="{!c.toggleSpinner}">
+        <aura:attribute name="spinnerComponent" type="Object" />
+        <aura:attribute name="isVisible" type="Boolean" default="false" />
+    </aura:method>
+</aura:component>

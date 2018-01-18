@@ -1,0 +1,99 @@
+<aura:component description="DriveWealth Order Form" 
+                implements="flexipage:availableForRecordHome,
+                            force:hasRecordId,
+                            forceCommunity:availableForAllPageTypes" 
+                controller="DWOrderForm_Controller"
+                access="global">
+  <!-- 
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┐
+  * Define component attributes.
+  * ────────────────────────────────────────────────────────────────────────────────────────────────
+  * debug                 Boolean                 Determines if component will enter extended 
+  *                                               debug mode.
+  * debugClient           Boolean                 TODO: ?????
+  * recordID              String                  Salesforce Account where the component is placed.
+  * symbolSearchEnabled   Boolean                 Determines whether or not to show the Symbol 
+  *                                               Search component.
+  * instrument            DriveWealthInstrument   Financial instrument related to a DriveWealth 
+  *                                               order.
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┘
+  -->
+  <aura:attribute name="debug"                type="Boolean"  default="false" access="global" />
+  <aura:attribute name="debugClient"          type="Boolean"  default="false" access="global" />
+  <aura:attribute name="recordId"             type="String"  />
+  <aura:attribute name="symbolSearchEnabled"  type="Boolean" default="false" />
+  <aura:attribute name="acc"                  type="Account" />
+  <aura:attribute name="instrument"           type="DriveWealthJsonInstrument" />
+
+
+  <!-- 
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┐
+  * Include non-rendering helper components.
+  * ────────────────────────────────────────────────────────────────────────────────────────────────
+  * ETLC_ApexBridge   Provides access to the Apex Bridge library, a utiltiy for making controller
+  *                   calls from inside of a Lightning Component.
+  *                   - debugServer (required): ????
+  *                   - debugClient (optional): Puts the component into debug mode.
+  * Utils             Basic set of common utilities.  Used to display error messages in the 
+  *                   component.  Also used for extended logging/messaging.
+  *                   - debugClient (required): Puts the component into debug mode.
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┘
+  -->
+  <c:ETLC_ApexBridge aura:id="ApexBridge" debugClient="{!v.debugClient}" debugServer="{!v.debug}" />
+  <c:Utils           aura:id="utils"      debugClient="{!v.debugClient}" />
+
+  <!-- 
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┐
+  * Define handlers
+  * ────────────────────────────────────────────────────────────────────────────────────────────────
+  * init                Component     Find out if the Symbol Search feature is enabled.
+  * EvtInstrumentInfo   ????          Capture Instrument Info.
+  * ????                ????          ????
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┘
+  -->
+  <aura:handler name="init"               action="{!c.doInit}"                  value="{!this}" />
+
+<!--  
+  <aura:handler name="EvtInstrumentInfo"  action="{!c.handleEvtInstrumentInfo}" event="c:EvtInstrumentInfo" />
+  <aura:handler event="c:EvtAccountCreated" action="{!c.handleEvtAccountCreated}" />
+-->
+  <!--
+  <aura:handler event="c:EvtOrderCreated" action="{!c.handleEvtOrderCreated}" />
+  -->
+
+  <div  class="slds-box slds-theme_default">
+    <!-- BLOCK ONE: Account Panel -->
+    <div aura:id="orderFormBlockOne">
+      <c:DWAccountPanel aura:id="DWAccountPanel" 
+                        debugClient="{!v.debugClient}" 
+                        recordId="{!v.recordId}" />
+    </div>
+    <!-- BLOCK TWO: Symbol Search Panel -->
+    <div aura:id="orderFormBlockTwo">
+      <aura:if isTrue="{!v.symbolSearchEnabled}">
+        <c:DWSymbolSearchPanel  aura:id="DWSymbolSearchPanel"
+                                debugClient="{!v.debugClient}" 
+                                recordId="{!v.recordId}" />
+      </aura:if>
+    </div>
+    <!-- BLOCK THREE: Order Form Panel -->    
+    <div aura:id="orderFormBlockThree">
+      <c:DWOrderPanel aura:id="DWOrderPanel" 
+                      debugClient="{!v.debugClient}" 
+                      recordId="{!v.recordId}" />
+    </div>
+  </div>
+
+</aura:component>	
+
+
+
+
+
+  <!-- 
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┐
+  * Body Content (Block Three): The "Order Form" panel.
+  *
+  * ????
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┘
+  -->

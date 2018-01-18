@@ -1,0 +1,6 @@
+<aura:event type="APPLICATION" description="EvtOrderCreated">
+    <!-- Order Information -->
+    <aura:attribute type="DriveWealthJsonMarketOrder" name="order" />
+    <!-- Who fired this event; just for logging if needed and not required  -->
+    <aura:attribute type="String" name="context" />
+</aura:event>

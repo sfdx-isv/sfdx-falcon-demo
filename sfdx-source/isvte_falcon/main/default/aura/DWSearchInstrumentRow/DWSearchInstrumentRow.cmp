@@ -1,0 +1,59 @@
+<aura:component description="DWSearchInstrumentRow">
+    <aura:attribute name="debug" type="Boolean" default="false" access="global"/>
+    <aura:attribute name="debugClient" type="Boolean" default="false" access="global" />
+
+    <aura:attribute name="data" type="DriveWealthJsonInstrument" />
+    <aura:attribute name="allowOrderPlacement" type="Boolean" default="false"/>
+    <aura:attribute name="fireEvtInstrumentInfoName" type="String" default="Place Oder"/>
+
+    <!-- action is defined in calling function. data will be set as button value to access -->
+    <aura:attribute name="placeOrderAction" type="Object"/>
+
+    <!-- For using Utils library -->
+    <c:Utils debugClient="{!v.debugClient}" aura:id="utils"  />
+
+    
+    <!-- Raise event for selected symbol to place order -->
+    <aura:registerEvent name="EvtInstrumentInfo" type="c:EvtInstrumentInfo" />
+
+
+    <tr>
+        <th scope="col" data-label="{!v.data.symbol}">
+            <div class="slds-truncate" title="{!v.data.symbol}">
+                <aura:if isTrue="{!v.data.urlInvestor != null }">
+                {!v.data.urlInvestor}++
+                    <ui:outputURL value="{!v.data.urlInvestor}" label="{!v.data.symbol}"/>
+                    <aura:set attribute="else">
+                        {!v.data.symbol}
+                    </aura:set>
+                </aura:if>
+            </div>
+        </th>
+        <th scope="col" data-label="{!v.data.rateAsk}">
+            <div class="slds-truncate" title="{!v.data.rateAsk}">{!v.data.rateAsk} </div>
+        </th>
+        <th scope="col" data-label="{!v.data.rateBid}">
+            <div class="slds-truncate" title="{!v.data.rateBid}">{!v.data.rateBid} </div>
+        </th>
+        <th scope="col" data-label="{!v.data.tradeStatus}">
+            <div class="slds-truncate" title="{!v.data.tradeStatus}">
+                <aura:if isTrue="{!v.data.tradeStatus == 0}">
+                    Inactive
+                </aura:if>
+                <aura:if isTrue="{!v.data.tradeStatus == 1}">
+                    Active
+                </aura:if>
+                <aura:if isTrue="{!v.data.tradeStatus == 2}">
+                    Close Positions Only
+                </aura:if>
+            </div>
+        </th>
+        <aura:if isTrue="{!v.allowOrderPlacement}">
+            <th scope="col" data-label="{!v.data.symbol}">
+                <div class="slds-truncate" title="{!v.data.symbol}">
+                    <lightning:button label="Place Order" onclick="{!v.placeOrderAction}" value="{!v.data}" />
+                </div>
+            </th>
+        </aura:if>
+    </tr>
+</aura:component>

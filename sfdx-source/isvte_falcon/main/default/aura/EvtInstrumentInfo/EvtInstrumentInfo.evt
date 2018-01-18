@@ -1,0 +1,8 @@
+<!-- This event will be handled by component which wants to use Instrument Info. Creating practice order is a component that can use this information -->
+<aura:event type="COMPONENT" description="Create Practice Order">
+    <!-- Who fired this event; just for logging if needed and not required  -->
+    <aura:attribute type="String" name="context" />
+    <!-- instrument informaton-->
+    <aura:attribute type="DriveWealthJsonInstrument" name="instrument" />
+
+</aura:event>

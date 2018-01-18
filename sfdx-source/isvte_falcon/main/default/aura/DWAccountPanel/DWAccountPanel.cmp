@@ -1,0 +1,88 @@
+<aura:component description="DriveWealth Account Panel" 
+                implements="force:hasRecordId" 
+                access="global">
+  <!-- 
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┐
+  * Define component attributes.
+  * ────────────────────────────────────────────────────────────────────────────────────────────────
+  * debug           Boolean     Determines if component will enter extended debug mode.
+  * debugClient     Boolean     TODO: ?????
+  * recordID        String      Salesforce Account where the component is placed.
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┘
+  -->
+  <aura:attribute name="debug"        type="Boolean"  default="false" access="global" />
+  <aura:attribute name="debugClient"  type="Boolean"  default="false" access="global" />
+  <aura:attribute name="acc"          type="Account"                  access="public" />
+  <aura:attribute name="recordId"     type="String" /> 
+  <aura:attribute name="record"       type="Object" />
+  <aura:attribute name="simpleRecord" type="Object" />
+  <aura:attribute name="recordError"  type="String" />
+  <aura:attribute name="panelTitle"   type="String" />
+
+  <!-- 
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┐
+  * Include non-rendering helper components.
+  * ────────────────────────────────────────────────────────────────────────────────────────────────
+  * Utils             Basic set of common utilities.  Used to display error messages in the 
+  *                   component.  Also used for extended logging/messaging.
+  *                   - debugClient (required): Puts the component into debug mode.
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┘
+  -->
+  <c:Utils debugClient="{!v.debugClient}" aura:id="utils"  />
+
+  <!-- 
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┐
+  * Utilize force:recordData to get access to DWAccount information from the Account record.
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┘
+  -->
+  <force:recordData aura:id="forceRecord"
+                    recordId="{!v.recordId}"
+                    layoutType="FULL"
+                    targetRecord="{!v.record}"
+                    targetFields="{!v.simpleRecord}"
+                    targetError="{!v.recordError}"
+                    recordUpdated="{!c.handleRecordUpdate}" 
+  />
+  
+  <!-- 
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┐
+  * Setup event handlers.
+  * ────────────────────────────────────────────────────────────────────────────────────────────────
+  * EvtAccountCreated   Application   Handle when a new DW Account gets created.
+  * init                Component     Component initialization handler.
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┘
+  -->
+  <aura:handler event="c:EvtAccountCreated" action="{!c.handleEvtAccountCreated}" includeFacets="true" phase="bubble" />
+  <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+  <!-- 
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┐
+  * Body Content: The "Account Panel"
+  *
+  * This is a collapsible section that is GREEN when a DriveWealth Account is configured for the
+  * currently loaded SFDC account, RED when there is no DW Account configured.
+  *
+  * The "account panel" changes from an account creation form to an account details view, 
+  * depending on the absence/presence of a DW Account.  
+  * ───────────────────────────────────────────────────────────────────────────────────────────────┘
+  -->
+  <div aura:id="AccountPanel" class="slds-section">
+    <h3 class="slds-section__title">
+      <lightning:button aura:id="AccountPanelHeader" 
+                        label="{!v.panelTitle}"
+                        class="{!v.simpleRecord.DW_User_ID__c 
+                                  ? 'slds-button slds-section__title-action statusGreen' 
+                                  : 'slds-button slds-section__title-action statusRed'}"
+                        onclick="{!c.toggleAccountPanel}" 
+                        iconName="utility:chevronright" 
+                        iconPosition="left" />
+    </h3>
+    <div class="slds-section__content" id="expando-unique-id">
+      <c:DWCreateAccountForm  aura:id="DWAccountForm" 
+                              debugClient="{!v.debugClient}" 
+                              recordId="{!v.recordId}" />
+    </div>
+  </div>
+  <!-- EndOf Body Content -->
+
+</aura:component>
