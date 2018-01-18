@@ -167,10 +167,6 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>MyNewLocalClassInACrazyPlace</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>SFDCAccessControlException</apexClass>
         <enabled>true</enabled>
     </classAccesses>
