@@ -26,19 +26,19 @@ DEFAULT_PACKAGE_DIR_NAME=isvte_falcon
 
 # Package Name.  Specified as part of the Package Detail info in your packaging org. 
 # Surround this value with double-quotes if your package name contains space characters.
-PACKAGE_NAME="My Managed Package"
+PACKAGE_NAME="SFDX-Falcon Demo"
 
 # Alias for the Dev Hub that should be used when creating scratch orgs for this project.
 DEV_HUB_ALIAS=MyDevHub
 
 # Alias for the primary Scratch Org used by this project.
-SCRATCH_ORG_ALIAS=my-project-SCRATCH
+SCRATCH_ORG_ALIAS=isvte_falcon-SCRATCH
 
 # Alias for the packaging org for this project.
 PACKAGING_ORG_ALIAS=isvte_falcon-PACKAGE
 
 # Alias for the subscriber sandbox org used to test managed-beta package installs.
-SUBSCRIBER_SANDBOX_ALIAS=my-project-SANDBOX
+SUBSCRIBER_SANDBOX_ALIAS=isvte_falcon-SANDBOX
 
 # Metadata Package ID.  Refers to the metadata package as a whole.  Must begin with "033".
 METADATA_PACKAGE_ID=033000000000000
@@ -49,8 +49,8 @@ PACKAGE_VERSION_ID=04t000000000000
 # Location of the scratch-def.json that should be used when using various dev-tools scripts.
 SCRATCH_ORG_CONFIG=$PROJECT_ROOT/config/project-scratch-def.json
 
-# "Clone with SSH" details of the Git repo used by this project
-GIT_CLONE_URI=git@github.com:sfdx-isv/falcon-x.git
+# "Clone with HTTPS" details of the Git repo used by this project
+GIT_CLONE_URI=https://github.com/sfdx-isv/sfdx-falcon-demo.git
 
 # Echo the variables set by this script prior to exiting.  Specify "true" or "false".
 ECHO_LOCAL_CONFIG_VARS=true
