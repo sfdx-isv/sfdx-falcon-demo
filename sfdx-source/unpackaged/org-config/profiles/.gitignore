@@ -8,14 +8,14 @@
 ################################################################################
 
 # Ignore everything...
-*
+#*           # TODO: Temporarily allowing all contents in this folder until we can debug the TODO below.
 
 # Except the following...
 !.gitignore
 !README.md
 
 # And allow ALL Salesforce metadata files...
-!*-meta.xml
+#!*-meta.xml  # TODO: This was not working as expected. Commenting out this line for now.
 
 # Or, allow ONLY a specific set of whitelisted files to be tracked. For example:
 # !Custom_Permset.permissionset-meta.xml
