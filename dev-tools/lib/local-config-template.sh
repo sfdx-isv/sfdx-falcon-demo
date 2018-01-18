@@ -22,7 +22,7 @@
 PROJECT_ROOT=~/projects/my-project
 
 # Default Package Directory. Should match what is set in sfdx-project.json.
-DEFAULT_PACKAGE_DIR_NAME=my_ns_prefix
+DEFAULT_PACKAGE_DIR_NAME=isvte_falcon
 
 # Package Name.  Specified as part of the Package Detail info in your packaging org. 
 # Surround this value with double-quotes if your package name contains space characters.
@@ -35,7 +35,7 @@ DEV_HUB_ALIAS=MyDevHub
 SCRATCH_ORG_ALIAS=my-project-SCRATCH
 
 # Alias for the packaging org for this project.
-PACKAGING_ORG_ALIAS=my_ns_prefix-PACKAGE
+PACKAGING_ORG_ALIAS=isvte_falcon-PACKAGE
 
 # Alias for the subscriber sandbox org used to test managed-beta package installs.
 SUBSCRIBER_SANDBOX_ALIAS=my-project-SANDBOX

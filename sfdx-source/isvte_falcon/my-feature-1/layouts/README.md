@@ -1,4 +1,4 @@
-# TODO: sfdx-source / my_ns_prefix / my-feature-1 / layouts
+# TODO: sfdx-source / isvte_falcon / my-feature-1 / layouts
 
 ### What type of files should be kept in this directory?
 

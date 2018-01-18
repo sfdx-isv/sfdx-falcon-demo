@@ -1,4 +1,4 @@
-# TODO: sfdx-source / my_ns_prefix / main / schema / customMetadata
+# TODO: sfdx-source / isvte_falcon / main / schema / customMetadata
 
 ### What type of files should be kept in this directory?
 

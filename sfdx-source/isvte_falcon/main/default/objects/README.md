@@ -1,4 +1,4 @@
-# TODO: sfdx-source / my_ns_prefix / main / default / objects
+# TODO: sfdx-source / isvte_falcon / main / default / objects
 
 ### What type of files should be kept in this directory?
 

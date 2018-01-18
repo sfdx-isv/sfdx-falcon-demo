@@ -1,4 +1,4 @@
-# TODO: sfdx-source / my_ns_prefix / main / schema / customObjects
+# TODO: sfdx-source / isvte_falcon / main / schema / customObjects
 
 ### What type of files should be kept in this directory?
 

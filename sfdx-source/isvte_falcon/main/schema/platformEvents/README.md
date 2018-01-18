@@ -1,4 +1,4 @@
-# TODO: sfdx-source / my_ns_prefix / main / schema / platformEvents
+# TODO: sfdx-source / isvte_falcon / main / schema / platformEvents
 
 ### What type of files should be kept in this directory?
 
