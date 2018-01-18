@@ -7,10 +7,12 @@
 # Object or Field metadata that ends up in this folder MUST be moved into the
 # schema folder in order to be included in the origin repo.
 ################################################################################
-
+# TODO: Need to come back and determine which components are core and what
+#       goes in features.  For now, comment out the rest of this .gitignore to
+#       make sure everything gets tracked.
 # Ignore everything...
-*
+#*
 
 # Except the following...
-!.gitignore
-!README.md
+#!.gitignore
+#!README.md

@@ -10,13 +10,15 @@
 #
 # TODO: Should page layouts EVER appear outside of a feature module?
 ################################################################################
-
+# TODO: Need to come back and determine which components are core and what
+#       goes in features.  For now, comment out the rest of this .gitignore to
+#       make sure everything gets tracked.
 # Ignore everything...
-*
+#*
 
 # Except the following files...
-!.gitignore
-!README.md
+#!.gitignore
+#!README.md
 
 # And each page layout listed below...
 # (ie. your whitelisted page layouts)

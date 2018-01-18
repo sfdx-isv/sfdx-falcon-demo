@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Order_Status__c</fullName>
+    <description>"0" - New, "1" - Partial Fill, "2" - Fill, "4" - Canceled, "8" - Rejected.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>"0" - New, "1" - Partial Fill, "2" - Fill, "4" - Canceled, "8" - Rejected.</inlineHelpText>
+    <label>Order Status</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>New</fullName>
+                <default>true</default>
+                <label>New</label>
+            </value>
+            <value>
+                <fullName>Fill</fullName>
+                <default>false</default>
+                <label>Fill</label>
+            </value>
+            <value>
+                <fullName>Canceled</fullName>
+                <default>false</default>
+                <label>Canceled</label>
+            </value>
+            <value>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+                <label>Rejected</label>
+            </value>
+            <value>
+                <fullName>Partial Fill</fullName>
+                <default>false</default>
+                <label>Partial Fill</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
