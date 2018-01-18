@@ -6,13 +6,15 @@
 #
 # TODO: Need to fill out the rest of this documentation header.
 ################################################################################
-
+# TODO: Need to come back and determine which components are core and what
+#       goes in features.  For now, comment out the rest of this .gitignore to
+#       make sure everything gets tracked.
 # Ignore everything...
-*
+#*
 
 # Except the following files...
-!.gitignore
-!README.md
+#!.gitignore
+#!README.md
 
 # And each ????? listed below...
 # (ie. your whitelisted profiles)
