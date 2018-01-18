@@ -33,8 +33,8 @@ confirmScriptExecution "Do you want to rebuild your scratch org?"
 #
 #### SCRATCH ORG SETUP (DELETE/CREATE/PUSH) ########################################################
 #
-# 0. Reset the Step Message counter and set the TOTAL STEPS to 4.
-resetStepMsgCounter 4
+# 0. Reset the Step Message counter and set the TOTAL STEPS to 6.
+resetStepMsgCounter 6
 
 # 1. Delete the current scratch org.
 echoStepMsg "Delete the $SCRATCH_ORG_ALIAS scratch org"
@@ -64,39 +64,38 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-#### Uncomment and modify if you need to install permission sets
 # 5. Assign permission sets to the scratch org's Admin user.
-#echoStepMsg "Assign permission sets to the scratch org's Admin user"
-#echo \
-#"Executing force:user:permset:assign \\
-#            --permsetname "My_Permission_Set" \\
-#            --targetusername $SCRATCH_ORG_ALIAS \\
-#            --loglevel error\n"
-#(cd $PROJECT_ROOT && exec sfdx force:user:permset:assign \
-#                                --permsetname "My_Permission_Set" \
-#                                --targetusername $SCRATCH_ORG_ALIAS \
-#                                --loglevel error)
-#if [ $? -ne 0 ]; then
-#  echoErrorMsg "Permission set could not be assigned to the admin user. Aborting Script."
-#  exit 1
-#fi
+echoStepMsg "Assign permission sets to the scratch org's Admin user"
+echo \
+"Executing force:user:permset:assign \\
+            --permsetname "FSC_DW" \\
+            --targetusername $SCRATCH_ORG_ALIAS \\
+            --loglevel error\n"
+(cd $PROJECT_ROOT && exec sfdx force:user:permset:assign \
+                                --permsetname "FSC_DW" \
+                                --targetusername $SCRATCH_ORG_ALIAS \
+                                --loglevel error)
+if [ $? -ne 0 ]; then
+  echoErrorMsg "Permission set could not be assigned to the admin user. Aborting Script."
+  exit 1
+fi
 
 #### Uncomment and modify if you need to setup data in your scratch org.
 # 6. Setup development data
-#echoStepMsg "Setup/import data needed for development"
-#echo \
-#"Executing force:data:tree:import \\
-#            --plan ./data/dataplan.json \\
-#            --targetusername $SCRATCH_ORG_ALIAS \\
-#            --loglevel error)\n"
-#(cd $PROJECT_ROOT && exec sfdx force:data:tree:import \
-#                                --plan ./data/dataplan.json \
-#                                --targetusername $SCRATCH_ORG_ALIAS \
-#                                --loglevel error)
-#if [ $? -ne 0 ]; then
-#  echoErrorMsg "Development data could not be imported into the scratch org. Aborting Script."
-#  exit 1
-#fi
+echoStepMsg "Setup/import data needed for development"
+echo \
+"Executing force:data:tree:import \\
+            --plan ./data/dataplan.json \\
+            --targetusername $SCRATCH_ORG_ALIAS \\
+            --loglevel error)\n"
+(cd $PROJECT_ROOT && exec sfdx force:data:tree:import \
+                                --plan ./data/dataplan.json \
+                                --targetusername $SCRATCH_ORG_ALIAS \
+                                --loglevel error)
+if [ $? -ne 0 ]; then
+  echoErrorMsg "Development data could not be imported into the scratch org. Aborting Script."
+  exit 1
+fi
 #
 #
 #### ECHO CLOSING MESSAGE ##########################################################################
