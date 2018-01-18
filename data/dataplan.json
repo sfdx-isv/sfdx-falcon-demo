@@ -1,0 +1,10 @@
+[
+    {
+        "sobject": "DriveWealth__c",
+        "saveRefs": true,
+        "resolveRefs": false,
+        "files": [
+            "data.json"
+        ]
+    }
+]

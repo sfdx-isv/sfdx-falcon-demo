@@ -1,0 +1,15 @@
+{
+    "records": [
+        {
+            "attributes": {
+                "type": "DriveWealth__c",
+                "referenceId": "DriveWealth__cRef1"
+            },
+            "endpoint__c": "https://api.drivewealth.io/v1/",
+            "Password__c": "YOUR-PASSWORD",
+            "Referral_Code__c": "YOUR-REF-CODE",
+            "User_ID__c": "YOUR-USER-ID",
+            "Username__c": "YOUR-USER-NAME"
+        }
+    ]
+}
