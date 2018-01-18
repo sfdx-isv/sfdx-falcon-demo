@@ -9,10 +9,12 @@
 # functionality, it should be added to that module within this package
 # directory (ie. into a sibling directory of main/default)
 ################################################################################
-
+# TODO: Need to come back and determine which Aura components are core and what
+#       goes in features.  For now, comment out the rest of this .gitignore to
+#       make sure everything gets tracked.
 # Ignore everything...
-*
+#*
 
 # Except the following...
-!.gitignore
-!README.md
+#!.gitignore
+#!README.md
