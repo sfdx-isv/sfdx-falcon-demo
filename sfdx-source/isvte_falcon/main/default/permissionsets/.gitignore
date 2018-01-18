@@ -6,17 +6,19 @@
 #
 # TODO: Need to validate the need here.  
 #
-# TODO: Need to update the text below to be specific to page layouts.
+# TODO: Need to update the text below to be specific to permission sets.
 #
 # TODO: Should permission sets EVER appear outside of a feature module? YES.
 ################################################################################
-
+# TODO: Need to come back and determine which components are core and what
+#       goes in features.  For now, comment out the rest of this .gitignore to
+#       make sure everything gets tracked.
 # Ignore everything...
-*
+#*
 
 # Except the following files...
-!.gitignore
-!README.md
+#!.gitignore
+#!README.md
 
 # And each permission set listed below...
 # (ie. your whitelisted permission sets)
